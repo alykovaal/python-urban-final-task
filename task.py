@@ -8,20 +8,15 @@ def read_file(filename: str) -> list[dict]:
     :return: Список словарей с данными о домах.
     """
 
-    my_file = open(filename, 'r', encoding='utf-8')
-    reader = csv.DictReader(my_file)
-    my_list = list(reader)
-    for i in my_list:
-        for key, value in i.items():
-            if key == 'floor_count':
-                i[key] = int(value)
-            if key == 'heating_value':
-                i[key] = float(value)
-            if key == 'area_residential':
-                i[key] = float(value)
-            if key == 'population':
-                i[key] = int(value)
-    return my_list
+    with open(filename, encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        houses = list(reader)
+        for house in houses:
+            house['floor_count'] = int(house['floor_count'])
+            house['heating_value'] = float(house['heating_value'])
+            house['area_residential'] = float(house['area_residential'])
+            house['population'] = int(house['population'])
+    return houses
 
 
 def classify_house(floor_count: int) -> str:
@@ -39,11 +34,10 @@ def classify_house(floor_count: int) -> str:
         raise ValueError("Число a должно быть положительным.")
     if floor_count in range(1, 6):
         return 'Малоэтажный'
+    elif floor_count in range(6, 17):
+        return 'Среднеэтажный'
     else:
-        if floor_count in range(6, 17):
-            return 'Среднеэтажный'
-        else:
-            return 'Многоэтажный'
+        return 'Многоэтажный'
 
 
 def get_classify_houses(houses: list[dict]) -> list[str]:
